@@ -6,7 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
 <style>
   :root {
     /* Palet Utama Madrasah: Hijau Tua, Hijau Lembut, Putih & Aksen Emas */
@@ -2168,10 +2169,36 @@
       }
 
       function deleteSoal(idSoal) {
-        if (!confirm('Hapus soal ' + idSoal + '?')) return;
-        KCC.apiCall('DELETE_SOAL', { idSoal: idSoal }).then(function(res) { if (res.success) { state.soalList = res.soalList; renderBankSoalTable(); KCC.showToast(res.message); } });
-      }
+        Swal.fire({
+          title: '🗑️ Hapus Soal?',
+          text: 'Anda akan menghapus ' + idSoal + ' secara permanen dari database Google Spreadsheet!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc2626',
+          cancelButtonColor: '#64748b',
+          confirmButtonText: 'Ya, Hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            
+            Swal.fire({
+              title: 'Menghapus Data...',
+              allowOutsideClick: false,
+              didOpen: () => { Swal.showLoading(); }
+            });
 
+            KCC.apiCall('DELETE_SOAL', { idSoal: idSoal }).then(function(res) {
+              if (res && res.success) {
+                state.soalList = res.soalList;
+                renderBankSoalTable();
+                Swal.fire('Terhapus!', res.message, 'success');
+              } else {
+                Swal.fire('Gagal!', (res && res.message) || 'Gagal menghapus soal.', 'error');
+              }
+            });
+          }
+        });
+      }
       function toggleSoalStatus(idSoal) {
         KCC.apiCall('TOGGLE_SOAL_STATUS', { idSoal: idSoal }).then(function(res) { if (res.success) { state.soalList = res.soalList; renderBankSoalTable(); } });
       }
@@ -2250,8 +2277,36 @@
       function changePassword() { KCC.apiCall('CHANGE_PASSWORD', { oldPassword: document.getElementById('inputOldPwd').value, newPassword: document.getElementById('inputNewPwd').value }).then(function(res) { if (res.success) { document.getElementById('inputOldPwd').value = ''; document.getElementById('inputNewPwd').value = ''; KCC.showToast(res.message); } }); }
       
       function resetAllScores() {
-        if (!confirm('Reset semua skor menjadi 0?')) return;
-        KCC.apiCall('RESET_ALL_SCORES', {}).then(function(res) { if (res.success) { applyBootstrapData(res.bootstrap); state.isReportDirty = true; KCC.showToast(res.message); } });
+        Swal.fire({
+          title: '🚨 Reset Seluruh Data?',
+          text: 'PERINGATAN: Seluruh skor tim, riwayat nilai, dan jawaban peserta akan dihapus menjadi 0. Perlombaan akan dimulai kembali dari awal!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc2626', // Warna merah (Danger)
+          cancelButtonColor: '#64748b',
+          confirmButtonText: 'Ya, Reset Semua!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            
+            // Tampilkan loading saat proses ke server
+            Swal.fire({
+              title: 'Mereset Database...',
+              allowOutsideClick: false,
+              didOpen: () => { Swal.showLoading(); }
+            });
+
+            KCC.apiCall('RESET_ALL_SCORES', {}).then(function(res) {
+              if (res && res.success) {
+                applyBootstrapData(res.bootstrap);
+                state.isReportDirty = true;
+                Swal.fire('Berhasil!', res.message, 'success');
+              } else {
+                Swal.fire('Gagal!', (res && res.message) || 'Terjadi kesalahan sistem.', 'error');
+              }
+            });
+          }
+        });
       }
 
       function loadReportData() {
