@@ -2015,16 +2015,50 @@
         KCC.apiCall('SET_REBUTAN_TEAM', { idTim: state.selectedTeamId }).then(function(res) { if (res.success) { state.publicSync = res.publicSync; renderLiveConsole(); KCC.showToast(res.message); } });
       }
 
+    // 1. Ganti fungsi controlGame
       function controlGame(command) {
-        KCC.apiCall('CONTROL_GAME', { command: command }).then(function(res) { if (res.success) { state.publicSync = res.publicSync; renderLiveConsole(); KCC.showToast(res.message); } else KCC.showToast((res && res.message), true); });
-      }
+        // Berikan efek visual loading pada deretan tombol kontrol
+        var btnWrap = document.querySelector('.flow-buttons-grid');
+        if (btnWrap) { btnWrap.style.opacity = '0.5'; btnWrap.style.pointerEvents = 'none'; }
+        
+        // Optimistic UI: Ubah tampilan di layar secara instan 0 detik
+        var gs = state.publicSync.gameState;
+        var bList = state.soalList.filter(function(s) { return s.statusAktif === 'AKTIF' && s.babak === gs.currentBabak; });
+        var curIdx = bList.findIndex(function(s) { return s.idSoal === gs.currentSoalId; });
+        
+        if (command === 'SOAL_BERIKUTNYA' && curIdx < bList.length - 1) { gs.currentSoalId = bList[curIdx + 1].idSoal; gs.revealAnswer = false; renderLiveConsole(); }
+        else if (command === 'SOAL_SEBELUMNYA' && curIdx > 0) { gs.currentSoalId = bList[curIdx - 1].idSoal; gs.revealAnswer = false; renderLiveConsole(); }
+        else if (command === 'TOGGLE_JAWABAN') { gs.revealAnswer = !gs.revealAnswer; renderLiveConsole(); }
+        else if (command === 'MULAI') { state.publicSync.header.statusPermainan = 'BERJALAN'; gs.timerStatus = 'RUNNING'; renderLiveConsole(); }
 
+        // Proses ke server di latar belakang
+        KCC.apiCall('CONTROL_GAME', { command: command }).then(function(res) {
+          if (btnWrap) { btnWrap.style.opacity = '1'; btnWrap.style.pointerEvents = 'auto'; }
+          if (res && res.success) { state.publicSync = res.publicSync; renderLiveConsole(); } 
+          else { KCC.showToast((res && res.message), true); }
+        }).catch(function() {
+          if (btnWrap) { btnWrap.style.opacity = '1'; btnWrap.style.pointerEvents = 'auto'; }
+        });
+      }
+      
       function changeActiveBabak(babak) {
         KCC.apiCall('CONTROL_GAME', { command: 'GANTI_BABAK', babak: babak }).then(function(res) { if (res.success) { state.publicSync = res.publicSync; renderLiveConsole(); KCC.showToast(res.message); } });
       }
 
+      // 2. Ganti fungsi selectSoalDirect
       function selectSoalDirect(idSoal) {
-        KCC.apiCall('SELECT_SOAL', { idSoal: idSoal }).then(function(res) { if (res.success) { state.publicSync = res.publicSync; renderLiveConsole(); KCC.showToast(res.message); } });
+        var pillsWrap = document.getElementById('consoleSoalPills');
+        if (pillsWrap) { pillsWrap.style.opacity = '0.5'; pillsWrap.style.pointerEvents = 'none'; }
+        
+        // Optimistic UI
+        state.publicSync.gameState.currentSoalId = idSoal;
+        state.publicSync.gameState.revealAnswer = false;
+        renderLiveConsole();
+
+        KCC.apiCall('SELECT_SOAL', { idSoal: idSoal }).then(function(res) {
+          if (pillsWrap) { pillsWrap.style.opacity = '1'; pillsWrap.style.pointerEvents = 'auto'; }
+          if (res && res.success) { state.publicSync = res.publicSync; renderLiveConsole(); }
+        });
       }
 
       function controlTimer(cmd) {
@@ -2038,14 +2072,29 @@
       function submitRubrikScore() { var score = document.getElementById('inputRubrikScore').value; var note = document.getElementById('inputRubrikNote').value; sendEvaluation({ evaluationMode: 'MANUAL_SCORE', customScore: score, catatanJuri: note, jawabanPeserta: note || ('Nilai Rubrik: ' + score) }); }
       function submitQuickVerdict(mode) { sendEvaluation({ evaluationMode: mode, isRebutan: document.getElementById('chkForceRebutanRule').checked, useRebutanWeight: document.getElementById('chkForceRebutanRule').checked }); }
 
+     // 3. Ganti fungsi sendEvaluation (Untuk Panel Penilaian Peserta)
       function sendEvaluation(extraPayload) {
-        if (!state.selectedTeamId) { KCC.showToast('Pilih Tim Peserta!', true); return; }
+        if (!state.selectedTeamId) { KCC.showToast('Pilih Tim Peserta terlebih dahulu!', true); return; }
+        
+        // Berikan efek loading pada area penilaian
+        var evalPanels = document.querySelectorAll('[id^="evalBox"]');
+        evalPanels.forEach(function(p) { p.style.opacity = '0.4'; p.style.pointerEvents = 'none'; });
+
         var payload = Object.assign({ idTim: state.selectedTeamId, idSoal: state.publicSync && state.publicSync.gameState ? state.publicSync.gameState.currentSoalId : '' }, extraPayload);
+        
         KCC.apiCall('SUBMIT_ANSWER', payload).then(function(res) {
+          evalPanels.forEach(function(p) { p.style.opacity = '1'; p.style.pointerEvents = 'auto'; });
+          
           if (!res || !res.success) { KCC.showToast((res && res.message), true); return; }
           if (res.statusBenarSalah === 'BENAR') KCC.sound.correct(); else if (res.statusBenarSalah === 'SALAH') KCC.sound.wrong();
-          state.publicSync = res.publicSync; state.isReportDirty = true; document.getElementById('inputJawabanIsian').value = '';
-          renderLiveConsole(); KCC.showToast(res.message);
+          
+          state.publicSync = res.publicSync; 
+          state.isReportDirty = true; 
+          document.getElementById('inputJawabanIsian').value = '';
+          renderLiveConsole(); 
+          KCC.showToast(res.message);
+        }).catch(function() {
+          evalPanels.forEach(function(p) { p.style.opacity = '1'; p.style.pointerEvents = 'auto'; });
         });
       }
 
