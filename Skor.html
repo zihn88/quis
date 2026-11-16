@@ -1163,16 +1163,23 @@
           histWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">Belum ada riwayat perubahan skor.</div>';
         } else {
           histWrap.innerHTML = histList.map(function(h) {
-            var sign = h.nilai >= 0 ? ('+' + h.nilai) : String(h.nilai);
-            var badgeCls = h.nilai > 0 ? 'badge-emerald' : (h.nilai < 0 ? 'badge-danger' : 'badge-info');
-            return '<div class="history-feed-item" style="' + (h.undone ? 'opacity:0.5;text-decoration:line-through;' : '') + '">' +
-              '<div>' +
-                '<div style="font-weight:800;">' + KCC.escapeHtml(h.namaTim) + ' <span style="font-weight:500;font-size:0.78rem;color:var(--text-muted);">• ' + KCC.escapeHtml(h.babak) + ' (' + KCC.escapeHtml(h.waktu) + ')</span></div>' +
-                '<div style="font-size:0.8rem;color:var(--text-secondary);">' + KCC.escapeHtml(h.keterangan) + '</div>' +
-              '</div>' +
-              '<span class="badge ' + badgeCls + '" style="font-size:0.95rem;">' + sign + '</span>' +
-            '</div>';
-          }).join('');
+  var sign = h.nilai >= 0 ? ('+' + h.nilai) : String(h.nilai);
+  var badgeCls = h.nilai > 0 ? 'badge-emerald' : (h.nilai < 0 ? 'badge-danger' : 'badge-info');
+  
+  // PERBAIKAN BUG WAKTU 1899:
+  var cleanWaktu = String(h.waktu || '');
+  // Jika string waktu mengandung "1899" atau berupa objek panjang, kita ekstrak jamnya saja (contoh: 13:40:53)
+  var timeMatch = cleanWaktu.match(/(\d{2}:\d{2}:\d{2})/);
+  if (timeMatch) cleanWaktu = timeMatch[1];
+  
+  return '<div class="history-feed-item" style="' + (h.undone ? 'opacity:0.5;text-decoration:line-through;' : '') + '">' +
+    '<div>' +
+      '<div style="font-weight:800;">' + KCC.escapeHtml(h.namaTim) + ' <span style="font-weight:500;font-size:0.78rem;color:var(--text-muted);">• ' + KCC.escapeHtml(h.babak) + ' (' + cleanWaktu + ')</span></div>' +
+      '<div style="font-size:0.8rem;color:var(--text-secondary);">' + KCC.escapeHtml(h.keterangan) + '</div>' +
+    '</div>' +
+    '<span class="badge ' + badgeCls + '" style="font-size:0.95rem;">' + sign + '</span>' +
+  '</div>';
+}).join('');
         }
       }
 
