@@ -6,7 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
 <style>
   :root {
     /* Palet Utama Madrasah: Hijau Tua, Hijau Lembut, Putih & Aksen Emas */
@@ -1179,26 +1180,55 @@
        * Fitur Edit Nama Tim langsung dari Papan Skor (Tersimpan ke Google Spreadsheet).
        */
       function editTeamName(idTim, currentName, currentMadrasah) {
-        var newName = prompt('Ubah Nama Tim (' + idTim + '):', currentName);
-        if (!newName || !newName.trim()) return;
-        var newMadrasah = prompt('Ubah Asal Kelas / Madrasah (' + idTim + '):', currentMadrasah);
-        if (newMadrasah === null) newMadrasah = currentMadrasah;
+        Swal.fire({
+          title: '✏️ Edit Identitas Tim',
+          html:
+            '<div style="text-align:left; font-size:0.85rem; font-weight:bold; color:#334155; margin-bottom:5px;">Nama Tim:</div>' +
+            '<input id="swal-input1" class="swal2-input" style="margin: 0 0 15px 0; width:100%;" value="' + currentName + '">' +
+            '<div style="text-align:left; font-size:0.85rem; font-weight:bold; color:#334155; margin-bottom:5px;">Asal Kelas / Madrasah:</div>' +
+            '<input id="swal-input2" class="swal2-input" style="margin: 0; width:100%;" value="' + currentMadrasah + '">',
+          focusConfirm: false,
+          showCancelButton: true,
+          confirmButtonText: 'Simpan',
+          cancelButtonText: 'Batal',
+          confirmButtonColor: '#059669',
+          preConfirm: () => {
+            return [ document.getElementById('swal-input1').value, document.getElementById('swal-input2').value ];
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var newName = result.value[0];
+            var newMadrasah = result.value[1];
+            if (!newName || !newName.trim()) return;
 
-        if (!KCC.getAdminToken()) {
-          var pwd = prompt('Masukkan Password Administrator untuk menyimpan perubahan nama tim:');
-          if (!pwd) return;
-          KCC.apiCall('LOGIN_ADMIN', { password: pwd, adminName: 'Operator Papan Skor' })
-            .then(function(res) {
-              if (!res || !res.success) {
-                KCC.showToast((res && res.message) || 'Password salah.', true);
-                return;
-              }
-              KCC.setAdminToken(res.token, res.adminName);
+            if (!KCC.getAdminToken()) {
+              Swal.fire({
+                title: '🔐 Otorisasi Operator',
+                text: 'Masukkan Password Administrator untuk menyimpan perubahan nama tim:',
+                input: 'password',
+                inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Verifikasi',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#059669'
+              }).then((pwdResult) => {
+                if (pwdResult.isConfirmed && pwdResult.value) {
+                  Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+                  KCC.apiCall('LOGIN_ADMIN', { password: pwdResult.value, adminName: 'Operator Papan Skor' })
+                    .then(function(res) {
+                      if (!res || !res.success) { Swal.fire('Akses Ditolak', (res && res.message) || 'Password salah.', 'error'); return; }
+                      KCC.setAdminToken(res.token, res.adminName);
+                      sendTeamUpdate(idTim, newName.trim(), newMadrasah.trim());
+                      Swal.close();
+                    });
+                }
+              });
+            } else {
               sendTeamUpdate(idTim, newName.trim(), newMadrasah.trim());
-            });
-        } else {
-          sendTeamUpdate(idTim, newName.trim(), newMadrasah.trim());
-        }
+            }
+          }
+        });
       }
 
       function sendTeamUpdate(idTim, namaTim, namaMadrasah) {
