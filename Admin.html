@@ -2268,6 +2268,7 @@
         var thead = document.getElementById('reportRecapThead');
         var babakThs = (rep.babakColumns || []).map(function(b) { return '<th>' + KCC.escapeHtml(b) + '</th>'; }).join('');
         thead.innerHTML = '<tr><th>Peringkat</th><th>Nama Tim</th><th>Utusan</th>' + babakThs + '<th>Total Nilai</th><th>Benar</th><th>Salah</th></tr>';
+        
         document.getElementById('reportRecapTbody').innerHTML = (rep.rekapTim || []).map(function(r) {
           var babakTds = (rep.babakColumns || []).map(function(b) { return '<td>' + (r.rincianBabak[b] || 0) + '</td>'; }).join('');
           return '<tr><td><span class="badge ' + (r.isTied ? 'badge-gold' : 'badge-emerald') + '">#' + KCC.escapeHtml(r.peringkat) + '</span></td><td><strong>' + KCC.escapeHtml(r.namaTim) + '</strong></td><td>' + KCC.escapeHtml(r.namaMadrasah) + '</td>' + babakTds + '<td style="font-size:1.05rem;font-weight:800;color:var(--emerald-700);">' + r.totalNilai + '</td><td style="color:#16a34a;font-weight:700;">' + r.jumlahBenar + '</td><td style="color:#dc2626;font-weight:700;">' + r.jumlahSalah + '</td></tr>';
@@ -2275,8 +2276,31 @@
 
         var histTbody = document.getElementById('reportHistoryTbody');
         var hList = rep.riwayatSkor || [];
-        if (hList.length === 0) histTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">Belum ada riwayat pemberian nilai.</td></tr>';
-        else histTbody.innerHTML = hList.map(function(h) { var sign = h.nilai >= 0 ? ('+' + h.nilai) : String(h.nilai); var color = h.nilai > 0 ? '#16a34a' : (h.nilai < 0 ? '#dc2626' : '#64748b'); return '<tr style="' + (h.undone ? 'opacity:0.55;text-decoration:line-through;' : '') + '"><td style="white-space:nowrap;">' + KCC.escapeHtml(h.tanggal + ' ' + h.waktu) + '</td><td><strong>' + KCC.escapeHtml(h.namaTim) + '</strong></td><td>' + KCC.escapeHtml(h.babak) + '</td><td>' + KCC.escapeHtml(h.idSoal) + '</td><td>' + KCC.escapeHtml(h.keterangan) + '</td><td style="font-weight:800;color:' + color + ';">' + sign + '</td><td>' + KCC.escapeHtml(h.admin) + '</td></tr>'; }).join('');
+        
+        if (hList.length === 0) {
+          histTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">Belum ada riwayat pemberian nilai.</td></tr>';
+        } else {
+          histTbody.innerHTML = hList.map(function(h) { 
+            var sign = h.nilai >= 0 ? ('+' + h.nilai) : String(h.nilai); 
+            var color = h.nilai > 0 ? '#16a34a' : (h.nilai < 0 ? '#dc2626' : '#64748b'); 
+            
+            // --- FILTER PERBAIKAN WAKTU ---
+            var cleanWaktu = String(h.waktu || '');
+            var timeMatch = cleanWaktu.match(/(\d{2}:\d{2}:\d{2})/);
+            if (timeMatch) cleanWaktu = timeMatch[1];
+            // ------------------------------
+            
+            return '<tr style="' + (h.undone ? 'opacity:0.55;text-decoration:line-through;' : '') + '">' +
+              '<td style="white-space:nowrap;">' + KCC.escapeHtml(h.tanggal + ' ' + cleanWaktu) + '</td>' +
+              '<td><strong>' + KCC.escapeHtml(h.namaTim) + '</strong></td>' +
+              '<td>' + KCC.escapeHtml(h.babak) + '</td>' +
+              '<td>' + KCC.escapeHtml(h.idSoal) + '</td>' +
+              '<td>' + KCC.escapeHtml(h.keterangan) + '</td>' +
+              '<td style="font-weight:800;color:' + color + ';">' + sign + '</td>' +
+              '<td>' + KCC.escapeHtml(h.admin) + '</td>' +
+            '</tr>'; 
+          }).join('');
+        }
       }
 
       function printReport(docType) { if (!state.reportData) { KCC.apiCall('GET_FULL_REPORT', {}).then(function(res) { if (res.success) { state.reportData = res; renderReportTables(res); executePrintDocument(docType, res); } }); } else { executePrintDocument(docType, state.reportData); } }
