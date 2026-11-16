@@ -2008,8 +2008,27 @@
         }
       }
 
-      function selectTeam(idTim) { state.selectedTeamId = idTim; renderLiveConsole(); }
-
+      function selectTeam(idTim) {
+        // Optimistic UI: Update tampilan Admin seketika
+        state.selectedTeamId = idTim;
+        renderLiveConsole();
+        
+        // Kirim perintah 'PILIH_TIM_AKTIF' ke backend GAS agar tersimpan dan tersinkronisasi ke Layar Soal
+        KCC.apiCall('CONTROL_GAME', { 
+          command: 'PILIH_TIM_AKTIF', 
+          idTim: idTim 
+        }).then(function(res) {
+          if (res && res.success) {
+            state.publicSync = res.publicSync;
+            // Opsi: kita bisa memanggil renderLiveConsole() lagi untuk memastikan state sama dengan server
+            renderLiveConsole(); 
+          } else {
+            KCC.showToast((res && res.message) || 'Gagal menyinkronkan tim aktif ke layar soal.', true);
+          }
+        }).catch(function(err) {
+          KCC.showToast('Koneksi terputus saat mengubah tim aktif.', true);
+        });
+      }
       function triggerRebutanBuzzer() {
         if (!state.selectedTeamId) { KCC.showToast('Pilih tim terlebih dahulu.', true); return; }
         KCC.sound.buzzer();
