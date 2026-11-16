@@ -6,7 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
 <style>
   :root {
     /* Palet Utama Madrasah: Hijau Tua, Hijau Lembut, Putih & Aksen Emas */
@@ -1332,17 +1333,36 @@
 
       function operatorCommand(cmd) {
         if (!KCC.getAdminToken()) {
-          var pwd = prompt('Masukkan Password Administrator untuk mengendalikan soal langsung dari layar ini:');
-          if (!pwd) return;
-          KCC.apiCall('LOGIN_ADMIN', { password: pwd, adminName: 'Operator Layar Soal' })
-            .then(function(res) {
-              if (!res || !res.success) {
-                KCC.showToast((res && res.message) || 'Password salah.', true);
-                return;
-              }
-              KCC.setAdminToken(res.token, res.adminName);
-              executeOperatorCommand(cmd);
-            });
+          Swal.fire({
+            title: '🔐 Otorisasi Operator',
+            text: 'Masukkan Password Administrator untuk mengendalikan soal langsung dari layar ini:',
+            input: 'password',
+            inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Verifikasi',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#059669',
+            cancelButtonColor: '#64748b',
+            background: '#ffffff',
+            customClass: { title: 'text-primary' }
+          }).then((result) => {
+            if (result.isConfirmed && result.value) {
+              
+              Swal.fire({ title: 'Memverifikasi...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+              
+              KCC.apiCall('LOGIN_ADMIN', { password: result.value, adminName: 'Operator Layar Soal' })
+                .then(function(res) {
+                  if (!res || !res.success) {
+                    Swal.fire('Akses Ditolak', (res && res.message) || 'Password salah.', 'error');
+                    return;
+                  }
+                  KCC.setAdminToken(res.token, res.adminName);
+                  Swal.close();
+                  executeOperatorCommand(cmd);
+                });
+            }
+          });
         } else {
           executeOperatorCommand(cmd);
         }
