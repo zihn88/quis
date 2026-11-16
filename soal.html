@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <title>Layar Soal (Display 1) — Kuis Cerdas Cermat Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Palet Utama Madrasah: Hijau Tua, Hijau Lembut, Putih & Aksen Emas */
+    --emerald-950: #022c22;
+    --emerald-900: #064e3b;
+    --emerald-800: #065f46;
+    --emerald-700: #047857;
+    --emerald-600: #059669;
+    --emerald-500: #10b981;
+    --emerald-100: #d1fae5;
+    --emerald-50: #ecfdf5;
+
+    --gold-700: #b45309;
+    --gold-600: #d97706;
+    --gold-500: #f59e0b;
+    --gold-400: #fbbf24;
+    --gold-300: #fcd34d;
+    --gold-100: #fef3c7;
+    --gold-50: #fffbeb;
+
+    /* Light Mode (Default) */
+    --bg-body: #f0fdf4;
+    --bg-pattern: radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.09) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.08) 0%, transparent 45%);
+    --bg-surface: #ffffff;
+    --bg-surface-alt: #f8fafc;
+    --bg-elevated: #ecfdf5;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-color: #cbd5e1;
+    --border-soft: #e2e8f0;
+    --shadow-sm: 0 2px 8px rgba(6, 78, 59, 0.06);
+    --shadow-md: 0 8px 24px rgba(6, 78, 59, 0.10);
+    --shadow-lg: 0 16px 40px rgba(6, 78, 59, 0.14);
+    --header-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 55%, #047857 100%);
+    --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --arabic-bg: #fffbeb;
+    --arabic-border: #fcd34d;
+    --arabic-text: #022c22;
+  }
+
+  [data-theme="dark"] {
+    --bg-body: #021812;
+    --bg-pattern: radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+                  radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.10) 0%, transparent 50%);
+    --bg-surface: #062e22;
+    --bg-surface-alt: #042219;
+    --bg-elevated: #083b2c;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #115e46;
+    --border-soft: #0d4735;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.60);
+    --header-gradient: linear-gradient(135deg, #01150f 0%, #064e3b 65%, #065f46 100%);
+    --arabic-bg: rgba(251, 191, 36, 0.08);
+    --arabic-border: rgba(251, 191, 36, 0.35);
+    --arabic-text: #fef3c7;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-body);
+    background-image: var(--bg-pattern);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Tipografi Teks Arab Al-Qur'an & Hadis (RTL) */
+  .arabic-text,
+  [dir="rtl"] {
+    font-family: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+    direction: rtl;
+    text-align: right;
+    line-height: 2.15;
+    letter-spacing: 0;
+    word-spacing: 3px;
+  }
+
+  .arabic-box {
+    background: var(--arabic-bg);
+    border: 2px solid var(--arabic-border);
+    border-right: 6px solid var(--gold-500);
+    border-radius: 16px;
+    padding: 20px 28px;
+    color: var(--arabic-text);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 14px 0;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Header Utama Premium */
+  .top-banner {
+    background: var(--header-gradient);
+    color: #ffffff;
+    padding: 16px 28px;
+    border-bottom: 4px solid var(--gold-400);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .brand-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.65rem;
+    color: var(--emerald-950);
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .brand-titles h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    color: #ffffff;
+    line-height: 1.25;
+  }
+
+  .brand-titles p {
+    font-size: 0.85rem;
+    color: var(--gold-300);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* Tombol Standar & Premium */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.18s ease;
+    text-decoration: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--emerald-600), var(--emerald-800));
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.28);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--emerald-500), var(--emerald-700));
+  }
+
+  .btn-gold {
+    background: var(--gold-gradient);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.32);
+  }
+  .btn-gold:hover {
+    filter: brightness(1.07);
+  }
+
+  .btn-outline {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+  .btn-outline:hover {
+    border-color: var(--emerald-500);
+    background: var(--bg-elevated);
+  }
+
+  .btn-glass {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .btn-glass:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: #ffffff;
+  }
+  .btn-danger:hover {
+    background: #b91c1c;
+  }
+
+  .btn-success {
+    background: #16a34a;
+    color: #ffffff;
+  }
+  .btn-success:hover {
+    background: #15803d;
+  }
+
+  .btn-lg {
+    padding: 13px 22px;
+    font-size: 1rem;
+    border-radius: 12px;
+  }
+
+  .btn-sm {
+    padding: 6px 11px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+  }
+
+  /* Kartu & Panel */
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-soft);
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Badge & Indikator Status */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-emerald {
+    background: var(--emerald-100);
+    color: var(--emerald-900);
+  }
+  .badge-gold {
+    background: var(--gold-100);
+    color: var(--gold-700);
+  }
+  .badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  .badge-info {
+    background: #e0f2fe;
+    color: #075985;
+  }
+
+  /* Form Input */
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px 13px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.92rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--emerald-600);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+  }
+
+  textarea.form-control {
+    min-height: 84px;
+    resize: vertical;
+  }
+
+  /* Tabel Modern */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+  }
+
+  table.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  table.modern-table th {
+    background: var(--emerald-900);
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 12px 14px;
+    white-space: nowrap;
+  }
+
+  table.modern-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: middle;
+  }
+
+  table.modern-table tr:hover td {
+    background: var(--bg-elevated);
+  }
+
+  /* Animasi Perubahan Skor &Pergantian Soal */
+  @keyframes scorePulse {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.16); color: var(--gold-500); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes slideFadeIn {
+    0% { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes leaderCrownGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45), 0 12px 32px rgba(6, 78, 59, 0.18); }
+    50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0), 0 16px 40px rgba(245, 158, 11, 0.30); }
+  }
+
+  .animate-slide-in {
+    animation: slideFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .score-pop {
+    animation: scorePulse 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Toast Notification */
+  .toast-container {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 390px;
+  }
+
+  .toast-item {
+    background: var(--emerald-950);
+    color: #ffffff;
+    border-left: 5px solid var(--gold-400);
+    padding: 13px 18px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: slideFadeIn 0.25s ease forwards;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .toast-item.toast-error {
+    background: #7f1d1d;
+    border-left-color: #f87171;
+  }
+
+  /* Modal Overlay */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 44, 34, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .modal-backdrop.active {
+    display: flex;
+  }
+
+  .modal-box {
+    background: var(--bg-surface);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 820px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 24px;
+    animation: slideFadeIn 0.25s ease forwards;
+  }
+
+  /* Gaya Khusus Cetak PDF / Berita Acara */
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+    .no-print,
+    .top-banner,
+    .admin-sidebar,
+    .toast-container {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+    .card {
+      box-shadow: none !important;
+      border: 1px solid #999 !important;
+      break-inside: avoid;
+    }
+  }
+</style>
+
+  <style>
+    .display-soal-container {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 90px);
+      gap: 20px;
+    }
+
+    /* Baris Info Babak, Nomor Soal & Timer Raksasa */
+    .projector-top-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .babak-meta-card {
+      background: var(--bg-surface);
+      border-radius: 20px;
+      border: 2px solid var(--border-color);
+      border-left: 8px solid var(--emerald-600);
+      padding: 18px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .nomor-soal-pill {
+      background: var(--header-gradient);
+      color: var(--gold-300);
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 1.55rem;
+      font-weight: 800;
+      border: 2px solid var(--gold-400);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .babak-title-group h2 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .babak-title-group p {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--emerald-700);
+    }
+
+    /* Kartu Timer Proyektor */
+    .projector-timer-card {
+      background: var(--header-gradient);
+      color: #ffffff;
+      border-radius: 20px;
+      border: 3px solid var(--gold-400);
+      padding: 16px 32px;
+      min-width: 310px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .projector-timer-card.warning {
+      background: linear-gradient(135deg, #92400e 0%, #d97706 100%);
+      animation: scorePulse 0.9s infinite;
+    }
+
+    .projector-timer-card.expired {
+      background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%);
+    }
+
+    .projector-timer-digits {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 3.6rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #ffffff;
+      letter-spacing: 2px;
+    }
+
+    .timer-progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 99px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .timer-progress-bar {
+      height: 100%;
+      background: var(--gold-400);
+      width: 100%;
+      transition: width 0.3s linear;
+    }
+
+    /* Banner Rebutan Aktif */
+    .rebutan-banner {
+      background: linear-gradient(135deg, var(--gold-500), var(--gold-700));
+      color: #ffffff;
+      padding: 16px 28px;
+      border-radius: 18px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      animation: slideFadeIn 0.25s ease;
+    }
+
+    /* Kartu Pertanyaan Utama Proyektor */
+    .question-stage-card {
+      background: var(--bg-surface);
+      border-radius: 24px;
+      border: 2px solid var(--border-color);
+      padding: 34px 42px;
+      box-shadow: var(--shadow-lg);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .projector-arabic {
+      background: var(--arabic-bg);
+      border: 2.5px solid var(--arabic-border);
+      border-right: 10px solid var(--gold-500);
+      border-radius: 20px;
+      padding: 26px 36px;
+      font-size: 2.85rem;
+      line-height: 2.25;
+      color: var(--arabic-text);
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .projector-question-text {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 26px;
+    }
+
+    /* Grid Opsi Pilihan Ganda A, B, C, D */
+    .projector-options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .projector-option-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 20px 24px;
+      border-radius: 18px;
+      border: 2.5px solid var(--border-color);
+      background: var(--bg-surface-alt);
+      font-size: 1.42rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      transition: all 0.25s ease;
+    }
+
+    .option-letter-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--emerald-800);
+      color: var(--gold-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .projector-option-card.correct-revealed {
+      border-color: #16a34a;
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.16), rgba(16, 185, 129, 0.25));
+      transform: scale(1.02);
+      box-shadow: 0 10px 28px rgba(22, 163, 74, 0.25);
+    }
+
+    .projector-option-card.correct-revealed .option-letter-circle {
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    /* Kartu Kunci Jawaban & Pembahasan (Muncul Saat Admin Tampilkan Jawaban) */
+    .answer-reveal-banner {
+      margin-top: 24px;
+      padding: 24px 30px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #ecfdf5 0%, #fef3c7 100%);
+      border: 3px solid var(--emerald-600);
+      color: #022c22;
+      display: none;
+      animation: slideFadeIn 0.35s ease;
+    }
+
+    [data-theme="dark"] .answer-reveal-banner {
+      background: linear-gradient(135deg, #064e3b 0%, #451a03 100%);
+      color: #ffffff;
+      border-color: var(--gold-400);
+    }
+
+    /* Footer Navigasi & Kontrol Proyektor */
+    .projector-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 22px;
+      background: var(--bg-surface);
+      border-radius: 16px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 1024px) {
+      .projector-top-row {
+        grid-template-columns: 1fr;
+      }
+      .projector-options-grid {
+        grid-template-columns: 1fr;
+      }
+      .projector-question-text {
+        font-size: 1.5rem;
+      }
+      .projector-arabic {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER LAYAR SOAL -->
+  <header class="top-banner">
+    <div class="brand-wrap">
+      <div class="brand-logo" id="soalHeaderLogo">🕌</div>
+      <div class="brand-titles">
+        <h1 id="soalHeaderKegiatan">KUIS CERDAS CERMAT TIM AL-QUR'AN HADIS IX</h1>
+        <p id="soalHeaderLembaga">LAYAR SOAL UTAMA (DISPLAY 1)</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button type="button" class="btn btn-glass btn-sm" onclick="KCC.openSeparateDisplay('skor')">🏆 Buka Papan Skor</button>
+      <button class="btn btn-glass btn-sm" onclick="DisplaySoalApp.adjustFontSize(-0.15)" title="Perkecil ukuran teks">A-</button>
+      <button class="btn btn-glass btn-sm" onclick="DisplaySoalApp.adjustFontSize(0.15)" title="Perbesar ukuran teks">A+</button>
+      <button class="btn btn-glass btn-sm sound-toggle-btn" onclick="KCC.toggleSoundMute()">🔊 Suara Aktif</button>
+      <button class="btn btn-glass btn-sm theme-toggle-btn" onclick="KCC.toggleTheme()">🌙 Dark Mode</button>
+      <button class="btn btn-gold btn-sm" onclick="KCC.toggleFullscreen()">⛶ Layar Penuh</button>
+    </div>
+  </header>
+
+  <main class="display-soal-container">
+    <!-- Baris Info Babak, Nomor Soal & Timer -->
+    <div class="projector-top-row">
+      <div class="babak-meta-card">
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+          <div class="nomor-soal-pill" id="dispNomorSoalBadge">SOAL #1</div>
+          <div class="babak-title-group">
+            <h2 id="dispBabakName">Babak 1 - Wajib</h2>
+            <p id="dispKategoriName">Kategori: Hukum Bacaan Mad &amp; Tajwid</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <span id="dispJenisSoalBadge" class="badge badge-emerald" style="font-size:0.95rem;padding:8px 16px;">PILIHAN GANDA</span>
+          <span id="dispBobotBadge" class="badge badge-gold" style="font-size:0.95rem;padding:8px 16px;">💎 100 POIN</span>
+          <span id="dispActiveTeamBadge" class="badge badge-info" style="font-size:0.95rem;padding:8px 16px;">GILIRAN: TIM-A</span>
+        </div>
+      </div>
+
+      <!-- Timer Hitung Mundur -->
+      <div id="dispTimerCard" class="projector-timer-card">
+        <div style="font-size:0.78rem;font-weight:800;letter-spacing:1.2px;color:var(--gold-300);text-transform:uppercase;margin-bottom:4px;" id="dispTimerLabel">
+          WAKTU MENJAWAB
+        </div>
+        <div id="dispTimerDigits" class="projector-timer-digits">00:30</div>
+        <div class="timer-progress-track">
+          <div id="dispTimerBar" class="timer-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner Rebutan (Tampil otomatis saat ada tim menekan bel rebutan) -->
+    <div id="dispRebutanBanner" class="rebutan-banner">
+      ⚡ KESEMPATAN MENJAWAB REBUTAN: <span id="dispRebutanTeamName">-</span> ⚡
+    </div>
+
+    <!-- Panggung Soal Utama -->
+    <section id="dispQuestionStage" class="question-stage-card animate-slide-in">
+      <!-- Teks Arab RTL -->
+      <div id="dispArabicBox" class="projector-arabic arabic-text" dir="rtl" style="display:none;"></div>
+
+      <!-- Gambar Soal (Jika Ada) -->
+      <div id="dispImageWrap" style="display:none;text-align:center;margin-bottom:22px;">
+        <img id="dispQuestionImg" src="" alt="Gambar Soal" style="max-height:340px;max-width:100%;border-radius:16px;border:2px solid var(--border-color);box-shadow:var(--shadow-md);">
+      </div>
+
+      <!-- Pertanyaan Utama -->
+      <div id="dispQuestionText" class="projector-question-text">
+        Menghubungkan ke Database Google Spreadsheet...
+      </div>
+
+      <!-- Pilihan Jawaban A, B, C, D -->
+      <div id="dispOptionsGrid" class="projector-options-grid"></div>
+
+      <!-- Kotak Kunci Jawaban & Pembahasan (Hanya tampil jika Admin menekan Tampilkan Jawaban) -->
+      <div id="dispAnswerRevealBox" class="answer-reveal-banner">
+        <div style="font-size:0.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--emerald-700);margin-bottom:6px;">
+          ✅ KUNCI JAWABAN &amp; PEMBAHASAN RESMI
+        </div>
+        <div id="dispAnswerKeyText" style="font-size:1.65rem;font-weight:800;margin-bottom:8px;"></div>
+        <div id="dispPembahasanText" style="font-size:1.12rem;line-height:1.6;"></div>
+      </div>
+    </section>
+
+    <!-- Baris Kontrol Navigasi & Status Sinkronisasi -->
+    <footer class="projector-footer-bar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+        <span id="dispSyncInfo" style="font-size:0.84rem;font-weight:600;color:var(--text-secondary);">
+          Sinkronisasi Otomatis Aktif
+        </span>
+      </div>
+
+      <!-- Tombol Navigasi Soal & Jawaban (Terhubung ke Admin jika operator login di perangkat ini) -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="DisplaySoalApp.operatorCommand('SOAL_SEBELUMNYA')">
+          ⬅️ Soal Sebelumnya
+        </button>
+        <button id="btnOperatorToggleAnswer" class="btn btn-outline" onclick="DisplaySoalApp.operatorCommand('TOGGLE_JAWABAN')">
+          👁️ Tampilkan / Sembunyikan Jawaban
+        </button>
+        <button class="btn btn-primary" onclick="DisplaySoalApp.operatorCommand('SOAL_BERIKUTNYA')">
+          Soal Berikutnya ➡️
+        </button>
+      </div>
+    </footer>
+  </main>
+  </div>
+<div id="toastContainer" class="toast-container no-print"></div>
+
+<script>
+    /**
+     * ============================================================================
+     * SHAREDUTILS — Versi GitHub Pages / Decoupled Frontend
+     * ============================================================================
+     */
+    window.KCC = (function() {
+      // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+      var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwRLpIxHvwGTsICnU_0J-2DNdMgV4-J7hci1Cvti3BbF-NPKMfWORmkIZzV0VSRIVZ4/exec'; 
+      
+      var TOKEN_STORAGE_KEY = 'KCC_ADMIN_SESSION_TOKEN';
+      var ADMIN_NAME_KEY = 'KCC_ADMIN_OPERATOR_NAME';
+      var THEME_KEY = 'KCC_UI_THEME_MODE';
+      var SOUND_MUTED_KEY = 'KCC_SOUND_MUTED';
+
+      var broadcastChannel = null;
+      try {
+        if (typeof BroadcastChannel !== 'undefined') {
+          broadcastChannel = new BroadcastChannel('kcc_madrasah_sync_channel');
+        }
+      } catch (e) {}
+
+      function getAdminToken() {
+        try { return sessionStorage.getItem(TOKEN_STORAGE_KEY) || ''; } 
+        catch (e) { return ''; }
+      }
+
+      function setAdminToken(token, adminName) {
+        try {
+          if (token) {
+            sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
+            if (adminName) sessionStorage.setItem(ADMIN_NAME_KEY, adminName);
+          } else {
+            sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+          }
+        } catch (e) {}
+      }
+
+      function getAdminName() {
+        try { return sessionStorage.getItem(ADMIN_NAME_KEY) || 'Administrator'; } 
+        catch (e) { return 'Administrator'; }
+      }
+
+      /**
+       * Fungsi komunikasi Fetch API ke Server Google Apps Script
+       * Menggunakan text/plain untuk bypass CORS Preflight di GAS
+       */
+      function apiCall(action, payload) {
+        var req = {
+          action: action,
+          token: getAdminToken(),
+          payload: payload || {}
+        };
+
+        return fetch(GAS_API_URL, {
+          method: 'POST',
+          // Header text/plain sangat penting agar tidak diblokir oleh Google
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(req),
+          redirect: 'follow'
+        })
+        .then(function(response) {
+          if (!response.ok) throw new Error('Gagal menghubungi server.');
+          return response.json();
+        })
+        .then(function(res) {
+          if (res && res.publicSync && broadcastChannel) {
+            try { broadcastChannel.postMessage({ type: 'SYNC_UPDATE', data: res.publicSync }); } catch (e) {}
+          }
+          return res;
+        });
+      }
+
+      function onBroadcastSync(callback) {
+        if (!broadcastChannel) return;
+        broadcastChannel.addEventListener('message', function(ev) {
+          if (ev && ev.data && ev.data.type === 'SYNC_UPDATE' && ev.data.data) {
+            callback(ev.data.data);
+          }
+        });
+      }
+
+      /**
+       * Membuka layar terpisah sekarang jauh lebih cepat dan simpel.
+       * Cukup arahkan ke nama file HTML yang ada di GitHub Pages.
+       */
+      function openSeparateDisplay(targetMode) {
+        var mode = String(targetMode || 'soal').toLowerCase().trim();
+        var fileName = mode === 'skor' ? 'Skor.html' : 'Soal.html';
+        
+        var win = window.open(fileName, '_blank');
+        if (!win) {
+          showToast('Pop-up diblokir oleh browser. Silakan izinkan pop-up.', true);
+        }
+      }
+
+      function showToast(message, isError) {
+        var container = document.getElementById('toastContainer');
+        if (!container) return;
+        var el = document.createElement('div');
+        el.className = 'toast-item' + (isError ? ' toast-error' : '');
+        el.innerHTML = '<span>' + escapeHtml(message) + '</span>' +
+          '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;cursor:pointer;font-weight:800;font-size:1rem;">✕</button>';
+        container.appendChild(el);
+        setTimeout(function() { if (el && el.parentElement) el.remove(); }, 4200);
+      }
+
+      function escapeHtml(str) {
+        return String(str === null || str === undefined ? '' : str)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function initTheme() {
+        var saved = 'light';
+        try { saved = localStorage.getItem(THEME_KEY) || 'light'; } catch (e) {}
+        document.documentElement.setAttribute('data-theme', saved);
+        updateThemeButtons(saved);
+      }
+
+      function toggleTheme() {
+        var current = document.documentElement.getAttribute('data-theme') || 'light';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        updateThemeButtons(next);
+      }
+
+      function updateThemeButtons(theme) {
+        var btns = document.querySelectorAll('.theme-toggle-btn');
+        btns.forEach(function(btn) { btn.innerHTML = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'; });
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(function() {}); } 
+        else { if (document.exitFullscreen) document.exitFullscreen(); }
+      }
+
+      var audioCtx = null;
+      function getAudioCtx() {
+        if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+          var Ctx = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new Ctx();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(function() {}); }
+        return audioCtx;
+      }
+
+      function isSoundMuted() {
+        try { return localStorage.getItem(SOUND_MUTED_KEY) === '1'; } catch (e) { return false; }
+      }
+
+      function toggleSoundMute() {
+        var next = !isSoundMuted();
+        try { localStorage.setItem(SOUND_MUTED_KEY, next ? '1' : '0'); } catch (e) {}
+        var btns = document.querySelectorAll('.sound-toggle-btn');
+        btns.forEach(function(b) { b.innerHTML = next ? '🔇 Suara Mati' : '🔊 Suara Aktif'; });
+        return next;
+      }
+
+      function playTone(freq, type, durationSec, startTimeOffset, gainVal) {
+        if (isSoundMuted()) return;
+        try {
+          var ctx = getAudioCtx(); if (!ctx) return;
+          var osc = ctx.createOscillator(); var gain = ctx.createGain();
+          osc.type = type || 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + (startTimeOffset || 0));
+          gain.gain.setValueAtTime(gainVal || 0.18, ctx.currentTime + (startTimeOffset || 0));
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (startTimeOffset || 0) + durationSec);
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + (startTimeOffset || 0)); osc.stop(ctx.currentTime + (startTimeOffset || 0) + durationSec);
+        } catch (e) {}
+      }
+
+      var sound = {
+        correct: function() { playTone(523.25, 'triangle', 0.16, 0, 0.22); playTone(659.25, 'triangle', 0.16, 0.12, 0.22); playTone(783.99, 'triangle', 0.22, 0.24, 0.24); playTone(1046.50, 'triangle', 0.45, 0.36, 0.26); },
+        wrong: function() { playTone(240, 'sawtooth', 0.25, 0, 0.18); playTone(185, 'sawtooth', 0.45, 0.22, 0.20); },
+        tick: function() { playTone(880, 'sine', 0.06, 0, 0.09); },
+        timeUp: function() { playTone(440, 'square', 0.22, 0, 0.20); playTone(330, 'square', 0.22, 0.22, 0.20); playTone(220, 'square', 0.65, 0.44, 0.24); },
+        buzzer: function() { playTone(740, 'sawtooth', 0.14, 0, 0.24); playTone(987.77, 'sawtooth', 0.35, 0.14, 0.24); }
+      };
+
+      function parseCSV(text) {
+        var clean = String(text || '').replace(/^\uFEFF/, '');
+        var rows = []; var currentRow = []; var currentVal = ''; var inQuotes = false;
+        for (var i = 0; i < clean.length; i++) {
+          var ch = clean[i]; var next = clean[i + 1];
+          if (inQuotes) {
+            if (ch === '"' && next === '"') { currentVal += '"'; i++; } 
+            else if (ch === '"') { inQuotes = false; } 
+            else { currentVal += ch; }
+          } else {
+            if (ch === '"') { inQuotes = true; } 
+            else if (ch === ',') { currentRow.push(currentVal); currentVal = ''; } 
+            else if (ch === '\r' && next === '\n') { currentRow.push(currentVal); rows.push(currentRow); currentRow = []; currentVal = ''; i++; } 
+            else if (ch === '\n' || ch === '\r') { currentRow.push(currentVal); rows.push(currentRow); currentRow = []; currentVal = ''; } 
+            else { currentVal += ch; }
+          }
+        }
+        if (currentVal !== '' || currentRow.length > 0) { currentRow.push(currentVal); rows.push(currentRow); }
+        if (rows.length < 2) return [];
+        var headers = rows[0].map(function(h) { return String(h || '').trim(); });
+        var result = [];
+        for (var r = 1; r < rows.length; r++) {
+          if (rows[r].join('').trim() === '') continue;
+          var obj = {};
+          for (var c = 0; c < headers.length; c++) { obj[headers[c]] = rows[r][c] !== undefined ? rows[r][c] : ''; }
+          result.push(obj);
+        }
+        return result;
+      }
+
+      function downloadFile(filename, content, mimeType) {
+        var blob = new Blob([content], { type: mimeType || 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click();
+        setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+      }
+
+      document.addEventListener('DOMContentLoaded', initTheme);
+
+      return {
+        apiCall: apiCall, getAdminToken: getAdminToken, setAdminToken: setAdminToken, getAdminName: getAdminName,
+        onBroadcastSync: onBroadcastSync, openSeparateDisplay: openSeparateDisplay, showToast: showToast,
+        escapeHtml: escapeHtml, toggleTheme: toggleTheme, toggleFullscreen: toggleFullscreen,
+        sound: sound, toggleSoundMute: toggleSoundMute, isSoundMuted: isSoundMuted,
+        parseCSV: parseCSV, downloadFile: downloadFile
+      };
+    })();
+  </script>
+
+  <script>
+    /**
+     * ========================================================================
+     * DISPLAYSOALAPP — Logika Layar Soal Proyektor/TV (Display 1)
+     * ========================================================================
+     */
+    window.DisplaySoalApp = (function() {
+      var syncState = null;
+      var lastSyncVersion = null;
+      var lastRenderedSoalId = null;
+      var lastTickSecond = -1;
+      var fontScale = 1.0;
+
+      function init() {
+        pollSync();
+        setInterval(pollSync, 2000);
+        setInterval(updateLiveTimer, 200);
+
+        
+        KCC.onBroadcastSync(function(data) {
+          if (data) {
+            applySyncData(data);
+          }
+        });
+      }
+
+      function pollSync() {
+        KCC.apiCall('GET_PUBLIC_SYNC', { clientVersion: lastSyncVersion })
+          .then(function(res) {
+            if (!res || !res.success) return;
+            if (res.unchanged) return;
+            applySyncData(res);
+          })
+          .catch(function() {});
+      }
+
+      function applySyncData(data) {
+        var isQuestionChanged = lastRenderedSoalId !== (data.currentSoal && data.currentSoal.idSoal);
+        syncState = data;
+        lastSyncVersion = data.syncVersion;
+        lastRenderedSoalId = data.currentSoal ? data.currentSoal.idSoal : '';
+
+        // Header
+        document.getElementById('soalHeaderKegiatan').textContent = data.header.namaKegiatan;
+        document.getElementById('soalHeaderLembaga').textContent = data.header.namaLembaga + ' • LAYAR SOAL';
+        var logoEl = document.getElementById('soalHeaderLogo');
+        if (data.header.logo) {
+          logoEl.innerHTML = '<img src="' + KCC.escapeHtml(data.header.logo) + '" alt="Logo">';
+        } else {
+          logoEl.textContent = '🕌';
+        }
+
+        var gs = data.gameState;
+        var soal = data.currentSoal;
+
+        // Rebutan Banner
+        var rebBanner = document.getElementById('dispRebutanBanner');
+        if (gs.rebutanTeamId) {
+          var teamName = gs.rebutanTeamId;
+          if (data.scoreboard && data.scoreboard.teams) {
+            data.scoreboard.teams.forEach(function(t) {
+              if (t.idTim === gs.rebutanTeamId) teamName = t.namaTim + ' (' + t.namaMadrasah + ')';
+            });
+          }
+          document.getElementById('dispRebutanTeamName').textContent = teamName;
+          rebBanner.style.display = 'block';
+        } else {
+          rebBanner.style.display = 'none';
+        }
+
+        if (!soal) {
+          document.getElementById('dispQuestionText').textContent = 'Menunggu Admin memilih soal aktif...';
+          document.getElementById('dispArabicBox').style.display = 'none';
+          document.getElementById('dispOptionsGrid').innerHTML = '';
+          return;
+        }
+
+        if (isQuestionChanged) {
+          var stage = document.getElementById('dispQuestionStage');
+          stage.classList.remove('animate-slide-in');
+          void stage.offsetWidth;
+          stage.classList.add('animate-slide-in');
+          lastTickSecond = -1;
+        }
+
+        document.getElementById('dispNomorSoalBadge').textContent = 'SOAL NO. ' + soal.nomorSoal + ' / ' + (soal.totalInBabak || 1);
+        document.getElementById('dispBabakName').textContent = soal.babak;
+        document.getElementById('dispKategoriName').textContent = 'Kategori: ' + soal.kategori;
+
+        var jenisLabelMap = {
+          'PG': 'PILIHAN GANDA',
+          'BS': 'BENAR / SALAH',
+          'ISIAN': 'ISIAN SINGKAT',
+          'URAIAN': 'URAIAN TERBUKA',
+          'REBUTAN': 'BABAK REBUTAN',
+          'STUDI_KASUS': 'STUDI KASUS'
+        };
+        document.getElementById('dispJenisSoalBadge').textContent = jenisLabelMap[soal.jenisSoal] || soal.jenisSoal;
+        document.getElementById('dispBobotBadge').textContent = '💎 ' + soal.bobotNilai + ' POIN';
+
+        var activeTeamLabel = gs.activeTeamId || '-';
+        if (data.scoreboard && data.scoreboard.teams) {
+          data.scoreboard.teams.forEach(function(t) {
+            if (t.idTim === gs.activeTeamId) activeTeamLabel = t.namaTim;
+          });
+        }
+        document.getElementById('dispActiveTeamBadge').textContent = 'TIM AKTIF: ' + activeTeamLabel;
+
+        // Teks Arab
+        var arabBox = document.getElementById('dispArabicBox');
+        if (soal.teksArab) {
+          arabBox.style.display = 'block';
+          arabBox.textContent = soal.teksArab;
+        } else {
+          arabBox.style.display = 'none';
+        }
+
+        // Gambar Soal
+        var imgWrap = document.getElementById('dispImageWrap');
+        if (soal.gambarSoal) {
+          imgWrap.style.display = 'block';
+          document.getElementById('dispQuestionImg').src = soal.gambarSoal;
+        } else {
+          imgWrap.style.display = 'none';
+        }
+
+        // Pertanyaan
+        document.getElementById('dispQuestionText').textContent = soal.pertanyaan;
+
+        // Opsi Pilihan Ganda / Benar Salah
+        var optGrid = document.getElementById('dispOptionsGrid');
+        var hasOptions = soal.jenisSoal === 'PG' || soal.pilihanA || soal.pilihanB;
+        if (hasOptions) {
+          var opts = [
+            { code: 'A', text: soal.pilihanA },
+            { code: 'B', text: soal.pilihanB },
+            { code: 'C', text: soal.pilihanC },
+            { code: 'D', text: soal.pilihanD }
+          ].filter(function(o) { return o.text !== ''; });
+
+          var revealedKey = gs.revealAnswer ? String(soal.kunciJawaban || '').toUpperCase().trim() : '';
+
+          optGrid.innerHTML = opts.map(function(o) {
+            var isKeyMatch = revealedKey && (revealedKey === o.code || revealedKey === String(o.text).toUpperCase().trim());
+            return '<div class="projector-option-card ' + (isKeyMatch ? 'correct-revealed' : '') + '">' +
+              '<div class="option-letter-circle">' + o.code + '</div>' +
+              '<div style="flex:1;">' + KCC.escapeHtml(o.text) + (isKeyMatch ? ' ✅' : '') + '</div>' +
+            '</div>';
+          }).join('');
+        } else {
+          optGrid.innerHTML = '';
+        }
+
+        // Kunci Jawaban & Pembahasan (Hanya dikirim oleh server saat revealAnswer === true)
+        var revealBox = document.getElementById('dispAnswerRevealBox');
+        if (gs.revealAnswer && (soal.kunciJawaban || soal.pembahasan)) {
+          revealBox.style.display = 'block';
+          document.getElementById('dispAnswerKeyText').textContent = 'Jawaban Benar: ' + (soal.kunciJawaban || '-');
+          document.getElementById('dispPembahasanText').textContent = soal.pembahasan || '';
+        } else {
+          revealBox.style.display = 'none';
+        }
+
+        document.getElementById('dispSyncInfo').textContent =
+          'Terhubung ke Google Spreadsheet • Status: ' + data.header.statusPermainan;
+
+        updateLiveTimer();
+      }
+
+      function updateLiveTimer() {
+        if (!syncState || !syncState.gameState) return;
+        var gs = syncState.gameState;
+        var dur = gs.timerDuration || 30;
+        var rem = gs.timerRemaining || 0;
+
+        if (gs.timerStatus === 'RUNNING' && gs.timerEndTimestamp > 0) {
+          var diff = Math.ceil((gs.timerEndTimestamp - new Date().getTime()) / 1000);
+          rem = Math.max(0, diff);
+
+          // Bunyi detak detik pada masa peringatan & bunyi gong saat waktu habis
+          var warnSec = gs.warningThreshold || 10;
+          if (rem !== lastTickSecond) {
+            lastTickSecond = rem;
+            if (rem > 0 && rem <= warnSec) {
+              KCC.sound.tick();
+            } else if (rem === 0) {
+              KCC.sound.timeUp();
+            }
+          }
+        }
+
+        var mins = Math.floor(rem / 60);
+        var secs = rem % 60;
+        document.getElementById('dispTimerDigits').textContent =
+          (mins < 10 ? '0' + mins : mins) + ':' + (secs < 10 ? '0' + secs : secs);
+
+        var pct = dur > 0 ? Math.max(0, Math.min(100, (rem / dur) * 100)) : 0;
+        document.getElementById('dispTimerBar').style.width = pct + '%';
+
+        var card = document.getElementById('dispTimerCard');
+        var label = document.getElementById('dispTimerLabel');
+        card.classList.remove('warning', 'expired');
+
+        if (rem === 0 && (gs.timerStatus === 'RUNNING' || gs.timerEndTimestamp > 0)) {
+          card.classList.add('expired');
+          label.textContent = '⏰ WAKTU HABIS!';
+        } else if (rem <= (gs.warningThreshold || 10) && gs.timerStatus === 'RUNNING') {
+          card.classList.add('warning');
+          label.textContent = '⚠️ WAKTU HAMPIR HABIS!';
+        } else if (gs.timerStatus === 'PAUSED') {
+          label.textContent = '⏸ WAKTU DIJEDA';
+        } else {
+          label.textContent = '⏱️ WAKTU MENJAWAB';
+        }
+      }
+
+      function adjustFontSize(delta) {
+        fontScale = Math.max(0.75, Math.min(1.45, fontScale + delta));
+        document.getElementById('dispQuestionText').style.fontSize = (2.0 * fontScale) + 'rem';
+        document.getElementById('dispArabicBox').style.fontSize = (2.85 * fontScale) + 'rem';
+      }
+
+      function operatorCommand(cmd) {
+        if (!KCC.getAdminToken()) {
+          var pwd = prompt('Masukkan Password Administrator untuk mengendalikan soal langsung dari layar ini:');
+          if (!pwd) return;
+          KCC.apiCall('LOGIN_ADMIN', { password: pwd, adminName: 'Operator Layar Soal' })
+            .then(function(res) {
+              if (!res || !res.success) {
+                KCC.showToast((res && res.message) || 'Password salah.', true);
+                return;
+              }
+              KCC.setAdminToken(res.token, res.adminName);
+              executeOperatorCommand(cmd);
+            });
+        } else {
+          executeOperatorCommand(cmd);
+        }
+      }
+
+      function executeOperatorCommand(cmd) {
+        KCC.apiCall('CONTROL_GAME', { command: cmd })
+          .then(function(res) {
+            if (!res || !res.success) {
+              KCC.showToast((res && res.message) || 'Gagal menjalankan perintah.', true);
+              return;
+            }
+            applySyncData(res.publicSync);
+          });
+      }
+
+      document.addEventListener('DOMContentLoaded', init);
+
+      return {
+        adjustFontSize: adjustFontSize,
+        operatorCommand: operatorCommand,
+        refreshNow: pollSync,
+        applySyncData: applySyncData
+      };
+    })();
+  </script>
+</body>
+</html>
